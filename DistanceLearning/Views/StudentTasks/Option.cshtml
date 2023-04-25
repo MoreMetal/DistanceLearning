@@ -1,0 +1,79 @@
+﻿@model List<TaskViewModel>
+@{
+    ViewData["Title"] = "Задачник";
+    int taskCount = 0;
+    //string hostName = "https://localhost:7271/";
+    var tasks = Model;
+    string nameAnswer = "";
+}
+
+<section class="task-list">
+    <form asp-action="TaskChecking" method="post">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            taskCount = taskCount + 1;
+            nameAnswer = "tasks["+@i+"].Answer";
+
+            <div class="card my-3">
+                <input asp-for="@tasks[i].Id" hidden="" />
+                <input asp-for="@tasks[i].Text" hidden="" />
+                <input asp-for="@tasks[i].RightAnswer" hidden="" />
+                <input asp-for="@tasks[i].TaskTypeId" hidden="" />
+                <input asp-for="@tasks[i].ImagePath" hidden="" />
+                <input asp-for="@tasks[i].ImageName" hidden="" />
+
+                <div class="card-header">
+                    Задание @taskCount № @tasks[i].Id
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@Html.Raw(@tasks[i].Text)</p>
+                    @if(null != @tasks[i].ImagePath){
+                        <div class="text-center">
+                            <img src="~/@tasks[i].ImagePath" alt="@tasks[i].ImageName">
+                        </div>
+                    }
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="row g-2 justify-content-between">
+                        <div class="col-auto">
+                            <input class="form-control form-control-sm" type="text" name="@nameAnswer" placeholder="Ответ..." />
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-danger btn-sm solutionBtn" data-solution-card="solutionCard-@tasks[i].Id">Решение</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if(null != @tasks[i].Solution)
+            {
+                <div id="solutionCard-@tasks[i].Id" class="card bg-light my-3 d-none">
+                    <input asp-for="@tasks[i].SolutionChecking" class="solutionCheckInput" hidden="" />
+                    <input asp-for="@tasks[i].Solution.Text" hidden="" />
+                    <input asp-for="@tasks[i].Solution.ImagePath" hidden="" />
+                    <input asp-for="@tasks[i].Solution.ImageName" hidden="" />
+
+                    <div class="card-header">
+                        Решение @taskCount № @tasks[i].Id
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@Html.Raw(@tasks[i].Solution.Text)</p>
+                        @if(null != @tasks[i].Solution.ImagePath){
+                            <div class="text-center">
+                                <img src="~/@tasks[i].Solution.ImagePath" alt="@tasks[i].Solution.ImageName">
+                            </div>
+                        }
+                        <p class="card-text">Ответ: @tasks[i].RightAnswer</p>
+                    </div>
+                </div>
+            }
+            <hr />
+        }
+        <div class="row text-center">
+            <button class="btn btn-warning btn-lg">Закончить</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <script src="~/js/studentTasks.js"></script>
+}

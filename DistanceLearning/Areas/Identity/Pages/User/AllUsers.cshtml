@@ -1,0 +1,35 @@
+﻿@page
+@model AllUsersModel
+@{
+    ViewData["Title"] = "Список пользователей";
+    Layout = "/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>@ViewData["Title"]</h2>
+        <hr />
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Почта</th>
+                    <th scope="col">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in Model.Input.Users)
+            {
+                <tr>
+                    <th scope="row">@user.UserName</th>
+                    <td>@user.Email</td>
+                    <td>
+                        <a asp-page="ChangingRoles" class="btn btn-warning btn-sm" asp-route-userId="@user.Id">Права доступа</a>
+                    </td>
+                </tr>
+            }
+                        
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+﻿@page
+@model ChangingRolesModel
+@{
+    ViewData["Title"] = "Изменение ролей";
+    Layout = "/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <h2>@ViewData["Title"]</h2>
+        <hr />
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            @foreach (var role in Model.Input.Roles)
+            {
+                <div class="checkbox mb-3">
+                    <label class="form-label">
+                        <input type="checkbox" name="roles" value="@role.Name" @(Model.Input.UsersRoles.Contains(role.Name) ? "checked" : "") /> @role.Name
+                    </label>
+
+                </div>
+            }
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Сохранить</button>
+        </form>
+    </div>
+</div>

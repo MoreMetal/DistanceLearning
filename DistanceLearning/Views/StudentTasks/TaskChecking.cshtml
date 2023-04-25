@@ -1,0 +1,51 @@
+﻿@model List<TaskViewModel>
+
+@{
+    ViewData["Title"] = "Задачник";
+    int taskCount = 0;
+    string hostName = "https://localhost:7271/";
+}
+
+<section class="task-list">
+        @foreach (var task in Model)
+        {
+            taskCount = taskCount + 1;
+
+            <div class="card my-3 @task.CardColor">
+                <div class="card-header">
+                    Задание @taskCount № @task.Id
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@Html.Raw(task.Text)</p>
+                    @if(null != @task.ImagePath){
+                        <div class="text-center">
+                            <img src="@hostName/@task.ImagePath" alt="@task.ImageName">
+                        </div>
+                    }
+                    <p class="card-text">Ваш ответ: @task.Answer</p>
+                </div>
+            </div>
+            @if(null != @task.Solution)
+            {
+                <div class="card bg-light my-3">
+
+                    <div class="card-header">
+                        Решение @taskCount № @task.Id
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@Html.Raw(@task.Solution.Text)</p>
+                        @if(null != @task.Solution.ImagePath){
+                            <div class="text-center">
+                                <img src="@hostName/@task.Solution.ImagePath" alt="@task.Solution.ImageName">
+                            </div>
+                        }
+                        <p class="card-text">Ответ: @task.RightAnswer</p>
+                    </div>
+                </div>
+            }
+            <hr />
+        }
+        @*<div class="row text-center">
+            <button class="btn btn-warning btn-lg">Закончить</button>
+        </div>*@
+</section>

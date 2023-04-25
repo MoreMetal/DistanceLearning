@@ -1,0 +1,81 @@
+﻿@model IEnumerable<UserTaskStatisticsViewModel>
+
+@{
+    ViewData["Title"] = "Статистика";
+    int index = 0;
+}
+
+<h1>Статистика</h1>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+   @foreach (var item in Model)
+    {
+        index++;
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-heading-@index">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@index" aria-expanded="false" aria-controls="flush-collapse-@index">
+                Дата - @Html.DisplayFor(modelItem => item.Date) / Количество заданий - @item.Count / Правильные - @item.CorrectlySolved / Использование решения - @item.SolutionChecking
+                </button>
+            </h2>
+            <div id="flush-collapse-@index" class="accordion-collapse collapse" aria-labelledby="flush-heading-@index" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Название
+                                </th>
+                                <th>
+                                    Текст
+                                </th>
+                                <th>
+                                    Правильный ответ
+                                </th>
+                                <th>
+                                    Ваш ответ
+                                </th>
+                                <th>
+                                    Подсказка
+                                </th>
+                                <th>
+                                    Дата прохождения
+                                </th>
+                                <th>
+                                    Ид заданния
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    @foreach (var statistic in item.UserTaskStatistic)
+                    {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => statistic.Name)
+                                </td>
+                                <td>
+                                    @Html.Raw(statistic.Text)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => statistic.RightAnswer)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => statistic.Answer)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => statistic.SolutionChecking)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => statistic.CreateDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => statistic.ExamTask.Id)
+                                </td>
+                            </tr>
+                    }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+   }
+</div>

@@ -1,0 +1,273 @@
+﻿@model ExamTask
+
+@{
+    ViewData["Title"] = "Изменить";
+    var hostName = "https://localhost:7271/";
+}
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Общие</h3>
+
+            <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            </div>
+        </div>
+        <div class="card-body">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageName" />
+            <input type="hidden" asp-for="ImagePath" />
+            <input type="hidden" asp-for="Solution" />
+            <div class="form-group">
+                <label asp-for="Text" class="control-label"></label>
+                <textarea name="Text" class="summernote">@Model.Text</textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Formula" class="control-label"></label>
+                <input asp-for="Formula" class="form-control" placeholder="Пример: $a+$b/2" />
+                <span asp-validation-for="Formula" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskTypeId" class="control-label"></label>
+                <select asp-for="TaskTypeId" class ="form-control" asp-items="ViewBag.TaskTypeId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" hidden="" id="create-btn"/>
+            </div>
+        </form>
+        </div>
+        <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+        <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Изображение</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+                @if(0 != @Model.Id) {
+                    if(null != @Model.ImageName){
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                <th>Image Name</th>
+                                <th>Image Path</th>
+                                <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@Model.ImageName</td>
+                                    <td>@Model.ImagePath</td>
+                                    <td class="text-right py-0 align-middle">
+                                        <div class="btn-group btn-group-sm">
+                                        <a href="@hostName/@Model.ImagePath" target="_blank" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                            </table>
+                        }
+                        <div class="form-group m-4">
+                            <form asp-action="UploadImg" method="post" enctype="multipart/form-data">
+                                <input name="examTaskId" value="@Model.Id" hidden/>
+
+                                <input type="file" accept="image/png, image/jpeg" name="uploadImg" />
+                                <input class="btn btn-primary" type="submit" value="Загрузить" />
+                            </form>
+                        </div>
+                } else {
+                    <h3 class="card-title m-5">Надо сохраннить запись</h3>
+                }
+            </div>
+            <!-- /.card-body -->
+          </div>
+
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Генерируемые переменные</h3>
+
+                <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if(0 != @Model.Id) {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>LowerBound</th>
+                                <th>UpperBound</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           @foreach(var genVariable in Model.GeneratedVariables){
+                            <tr>
+                                <form asp-action="Edit" asp-controller="GeneratedVariable">
+                                    <input type="hidden" name="genVariable.Id" value="@genVariable.Id" />
+                                    <input type="hidden" name="genVariable.TaskId" value="@genVariable.TaskId" />
+                                    <td>
+                                        @genVariable.Id
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@genVariable.Name" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@genVariable.LowerBound" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@genVariable.UpperBound" />
+                                    </td>
+                                    <td class="text-right py-0 align-middle">
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="submit" class="btn btn-info btn-sm" >
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                            <label for="genVariableDeleted-@genVariable.Id" class="btn btn-danger btn-sm m-0">
+                                                <i class="fas fa-trash"></i>
+                                            </label>
+                                        </div>
+                                    </td>
+                                </form>
+                                <form asp-action="Delete" asp-controller="GeneratedVariable" method="post">
+                                    <input name="deletedId" value="@genVariable.Id" hidden/>
+                                    <input type="submit" id="genVariableDeleted-@genVariable.Id" hidden/>
+                                </form>
+                            </tr>
+                                }
+
+                            <tr>
+                                <form asp-action="Create" asp-controller="GeneratedVariable" method="post">
+                                    <input type="hidden" name="TaskId" value="@Model.Id" class="form-control" />
+                                    <td>
+                                        #
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="Name" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="LowerBound" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="UpperBound" />
+                                    </td>
+                                    <td class="text-right py-0 align-middle">
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </td>
+                                </form>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                } else {
+                    <h3 class="card-title m-5">Надо сохраннить запись</h3>
+                }
+            </div>
+        <!-- /.card-body -->
+        </div>
+
+        <div class="card card-orange">
+            <div class="card-header">
+                <h3 class="card-title">Решение</h3>
+
+                <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+                </div>
+            </div>
+            <div class="card-body">
+                @if(0 != @Model.Id) {
+                    <form asp-action="Edit" asp-controller="Solutions" >
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" name="TaskId" value="@Model.Id" />
+
+                        <input type="hidden" name="Id" value="@Model.Solution.Id" />
+                        <input type="hidden" name="ImageName" value="@Model.Solution.ImageName" />
+                        <input type="hidden" name="ImagePath" value="@Model.Solution.ImagePath" />
+
+                        <div class="form-group">
+                            <label asp-for="Text" class="control-label"></label>
+                            <textarea name="Text" class="summernote">@Model.Solution.Text</textarea>
+                            <span asp-validation-for="Text" class="text-danger"></span>
+                        </div>
+
+                        @if (null != @Model.Solution.ImageName)
+                        {
+                            <div class="input-group mb-3">
+                                <p class="form-control">@Model.Solution.ImageName</p>
+                                <div class="input-group-append">
+                                <a href="~/@Model.Solution.ImagePath" target="_blank" class="btn btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                </div>
+                            </div>
+                        }
+
+                        <input id="solution-save" type="submit" hidden="" />
+                    </form>
+                    <div class="form-group">
+                        <form asp-action="UploadImg" asp-controller="Solutions" method="post" enctype="multipart/form-data">
+                            <input name="solutionId" value="@Model.Solution.Id" hidden/>
+                            <input name="examTaskId" value="@Model.Id" hidden/>
+
+                            <input type="file" accept="image/png, image/jpeg" name="uploadImg" />
+                            <input class="btn btn-primary" type="submit" value="Загрузить" />
+                        </form>
+                    </div>
+                    <div class="form-group text-center">
+                        <label for="solution-save" class="btn btn-success">Сохранить</label>
+                    </div>
+
+                } else {
+                    <h3 class="card-title m-3">Надо сохраннить запись</h3>
+                }
+            </div>
+        <!-- /.card-body -->
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 p-3 d-flex justify-content-around">
+        <a asp-action="Index" class="btn btn-secondary">Назад</a>
+        <label for="create-btn" class="btn btn-success m-0">Сохранить</label>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('.summernote').summernote();
+        });
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

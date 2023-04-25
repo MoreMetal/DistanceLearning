@@ -1,0 +1,106 @@
+﻿@model ExamTask
+
+@{
+    ViewData["Title"] = "Создать задачу";
+}
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Общие</h3>
+
+            <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            </div>
+        </div>
+        <div class="card-body">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Text" class="control-label"></label>
+                <textarea name="Text" class="summernote">@Model.Text</textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Formula" class="control-label"></label>
+                <input asp-for="Formula" class="form-control" placeholder="Пример: $a+$b/2" />
+                <span asp-validation-for="Formula" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskTypeId" class="control-label"></label>
+                <select asp-for="TaskTypeId" class ="form-control" asp-items="ViewBag.TaskTypeId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" hidden="" id="create-btn"/>
+            </div>
+        </form>
+        </div>
+        <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Изображение</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+                @if(0 != @Model.Id) {
+                } else {
+                    <h3 class="card-title m-5">Надо сохраннить запись</h3>
+                }
+            </div>
+            <!-- /.card-body -->
+          </div>
+
+          <div class="card card-warning">
+            <div class="card-header">
+              <h3 class="card-title">Варианты ответов</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+                @if(0 != @Model.Id) {
+                    
+                } else {
+                    <h3 class="card-title m-5">Надо сохраннить запись</h3>
+                }
+            </div>
+            <!-- /.card-body -->
+          </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 p-3 d-flex justify-content-around">
+        <a asp-action="Index" class="btn btn-secondary">Назад</a>
+        <label for="create-btn" class="btn btn-success m-0">Создать</label>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('.summernote').summernote();
+        });
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
